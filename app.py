@@ -17,11 +17,9 @@ def get_pokemons():
 
 @app.route('/pokemons/<string:name>')
 def get_pokemon(name):
-	result = {}
-	for pokemon in pokemons:
-		if pokemon.get('name') == name:
-			result = pokemon
-			return jsonify({"pokemon":pokemon})
+	pokemon = found_pokemon_by_name(name)
+	if pokemon:
+		return jsonify({"pokemon":pokemon})
 	return jsonify({"message":"Pokemon not found"})
 
 
@@ -33,6 +31,26 @@ def add_pokemon():
 	}
 	pokemons.append(new_pokemon)
 	return 	jsonify({'message':'Pokemon added succesfully.', 'pokemons':pokemons})
+
+
+@app.route('/pokemons/<string:name>', methods=['PUT'])
+def update_pokemon(name):
+	pokemon = found_pokemon_by_name(name)
+	if pokemon:
+		pokemon['name'] = request.json['name']
+		pokemon['url'] = request.json['url']
+		return jsonify({
+			'message':'Pokemon updated.',
+			'pokemon':pokemon
+		})
+	return jsonify({'message':'Pokemon not found'})
+
+
+def found_pokemon_by_name(name):
+	for pokemon in pokemons:
+		if pokemon.get('name') == name:
+			return pokemon
+	return None
 
 
 if __name__ == '__main__':
