@@ -43,7 +43,19 @@ def update_pokemon(name):
 			'message':'Pokemon updated.',
 			'pokemon':pokemon
 		})
-	return jsonify({'message':'Pokemon not found'})
+	return jsonify({'message':'Pokemon not found.'})
+
+
+@app.route('/pokemons/<string:name>', methods=['DELETE'])
+def delete_pokemon(name):
+	pokemon = found_pokemon_by_name(name)
+	if pokemon:
+		pokemons.remove(pokemon)
+		return jsonify({
+			'message':'Pokemon deleted.',
+			'pokemons':pokemons
+		})
+	return jsonify({'message':'Pokemon not found.'})
 
 
 def found_pokemon_by_name(name):
